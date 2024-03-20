@@ -1,0 +1,131 @@
+stage {
+    backdrop Slot_Machine("gallery:Games/Slot Machine")
+    
+    let list = [  ];
+    let sum = 0;
+    let point = 0;
+    
+
+
+
+
+
+
+
+
+
+
+    actor Fruit {
+        costume Apple("gallery:Objects/Apple Idle")
+        costume Banana("gallery:Objects/Banana Idle")
+        costume Raspberry("gallery:Objects/Raspberry Idle")
+        costume Orange("gallery:Objects/Orange Idle")
+        
+        
+        
+        when stage.keyPressed("space") {
+            this.hide();
+            if(this.cloneId == 0) {
+                list = [  ];
+                this.show();
+                for(let i = 1; i <= Math.randomBetween(5, 10); i++) {
+                    this.nextCostume();
+                    this.wait(0.1);
+                }
+                list.push(costumeId);
+                stage.broadcast("start1");
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        when stage.signalReceived("start2") {
+            if(this.cloneId == 2) {
+                this.show();
+                for(let i = 1; i <= Math.randomBetween(5, 10); i++) {
+                    this.nextCostume();
+                    this.wait(0.1);
+                }
+                list.push(costumeId);
+                stage.broadcast("eval");
+            }
+        }
+       
+       
+       
+       
+       
+        when stage.signalReceived("start1") {
+            if(this.cloneId == 1) {
+                this.show();
+                for(let i = 1; i <= Math.randomBetween(5, 10); i++) {
+                    this.nextCostume(); 
+                    this.wait(0.1);
+                }
+                list.push(costumeId);
+                stage.broadcast("start2");
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        when cloned {
+            this.setPosition((this.cloneId - 1) * 180, -40);
+            this.setCostume(Math.randomBetween(1, 4));
+            this.hide();
+        }
+        
+        
+        
+        
+        when stage.started {
+            this.size = 150;
+            this.setCostume(Math.randomBetween(1, 4));
+            this.setPosition(-180, -40);
+            stage.createClone(this);
+            stage.createClone(this);
+        }
+    }
+    
+    actor Cow {
+        costume Idle("gallery:Animals/Cow Idle")
+        costume Walk_1("gallery:Animals/Cow Walk 1")
+        costume Walk_2("gallery:Animals/Cow Walk 2")
+        when stage.started {
+            this.setPosition(-230, 100);
+            this.size = 100;
+            this.setCostume(2);
+        }
+        when stage.signalReceived("eval") {
+            point = 0;
+            if(list[0] == list[1] || list[1] == list[2] || list[0] == list[2]) {
+                point = 1;
+            }
+            if(list[0] == list[1] && list[1] == list[2]) {
+                point = 3;
+            }
+            sum += point;
+            this.say("You were given " + point + " points, so far you have " + sum + " points.");
+        }
+        when stage.keyPressed("space") {
+            this.say("");
+        }
+    }
+}
