@@ -1,0 +1,107 @@
+stage {
+    backdrop Space("gallery:Scifi/Space")
+    let gameOn;
+    let top5 = [  ];
+    when started {
+        this.top5 = [  ];
+        this.showVariable(ref this.top5);
+    }
+    when signalReceived("gameStart") {
+        this.gameOn = true;
+        this.Timer.reset();
+    }
+    
+    actor Star {
+        costume Idle("gallery:Galaxy/Star Idle")
+        let speed = 0;
+        let minSpeed = 0;
+        let maxSpeed = 0;
+        when stage.started {
+            this.hide();
+            this.size = 40;
+            this.setPosition(-350, Math.randomBetween(-180, 180));
+        }
+        when stage.signalReceived("gameStart") {
+            this.minSpeed = 1;
+            this.maxSpeed = 4;
+            this.wait(0.5);
+            while(gameOn) {
+                if(gameOn) {
+                    stage.createClone(this);
+                    this.wait(0.5);
+                }
+                this.minSpeed += 0.2;
+                this.maxSpeed += 0.5;
+            }
+        }
+        when cloned {
+            this.y = Math.randomBetween(-180, 180);
+            this.speed = Math.randomBetween(minSpeed, maxSpeed);
+            this.show();
+            while(this.x <= 635) {
+                this.x += this.speed;
+                this.wait(0.02);
+                if(this.touching(Spaceship)) {
+                    gameOn = false;
+                    let temp = Timer.read();
+                    let index = 0;
+                    while(temp <= top5[index]) {
+                        index++;
+                    }
+                    top5.insertAt(index, temp);
+                    if(top5.length == 6) {
+                        top5.removeAt(5);
+                    }
+                    Spaceship.hide();
+                    Start.show();
+                    stage.broadcast("gameOver");
+                }
+            }
+            this.deleteClone();
+        }
+        when stage.signalReceived("gameOver") {
+            this.deleteClone();
+        }
+    }
+    
+    actor Spaceship {
+        costume Fly("gallery:Galaxy/Spaceship Fly")
+        when stage.started {
+            this.size = 30;
+            this.heading = 0;
+            this.hide();
+        }
+        when stage.keyPressed("up arrow") {
+            this.y += 5;
+            this.wait(0.02);
+        }
+        when stage.keyPressed("down arrow") {
+            this.y -= 5;
+            this.wait(0.02);
+        }
+        when stage.keyPressed("left arrow") {
+            this.x -= 5;
+            this.wait(0.02);
+        }
+        when stage.keyPressed("right arrow") {
+            this.x += 5;
+            this.wait(0.02);
+        }
+        when stage.signalReceived("gameStart") {
+            this.setPosition(280, 0);
+            this.show();
+        }
+    }
+    
+    actor Start {
+        costume Blue("gallery:Objects/Start Blue")
+        costume Pink("gallery:Objects/Start Pink")
+        when stage.started {
+            this.show();
+        }
+        when clicked {
+            this.hide();
+            stage.broadcast("gameStart");
+        }
+    }
+}
