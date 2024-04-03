@@ -1,0 +1,38 @@
+stage {
+
+ default backdrop Ground_with_Blue_Sky("gallery:Nature/Ground with Blue Sky")
+   let power = 0;
+   let ans;
+    
+    actor Robot {
+        costume Idle("gallery:Figures/Robot Idle")
+        when stage.started {
+       this.setPosition(-270,-80);     
+        }
+    }
+    
+    actor Lifebuoy {
+        costume Lifebuoy_Plan("gallery:Objects/Lifebuoy Plan")
+        
+        when stage.started {
+            
+        }
+    }
+    
+    actor Ball {
+        costume Yellow("gallery:Objects/Ball Yellow")
+        costume Green("gallery:Objects/Ball Green")
+        costume Red("gallery:Objects/Ball Red")
+        when stage.started {
+            
+            if(this.distanceTo(Lifebuoy) < 10) {
+                
+            }
+            else {
+                
+            }
+        }
+    }
+
+
+}

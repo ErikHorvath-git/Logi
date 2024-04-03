@@ -1,0 +1,40 @@
+stage {
+    default backdrop Ground_with_Blue_Sky("gallery:Nature/Ground with Blue Sky")
+    let power = 0;
+    let ans;
+    
+    actor Robot {
+        costume Idle("gallery:Figures/Robot Idle")
+        when stage.started {
+            this.setPosition(-270, -80);
+        }
+    }
+    
+    actor Lifebuoy {
+        costume Lifebuoy_Plan("gallery:Objects/Lifebuoy Plan")
+        
+        when stage.started {
+            this.setPosition(Math.randomBetween(0, 280), -80);
+        }
+    }
+    
+    actor Ball {
+        costume Yellow("gallery:Objects/Ball Yellow")
+        costume Green("gallery:Objects/Ball Green")
+        costume Red("gallery:Objects/Ball Red")
+        when stage.started {
+            this.setPosition(-240, -80);
+            this.show();
+            ans = stage.ask("How strong should I throw the ball?");
+            power = ans;
+            this.glideSecondsTo(0.5, this.x + power * power, this.y + (power / 2) * power);
+            this.glideSecondsTo(0.5, this.x + power * power, this.y - (power / 2) * power);
+            if(this.distanceTo(Lifebuoy) < 10) {
+                Robot.say("Good job.");
+            }
+            else {
+                Robot.say("You can get better next time.");
+            }
+        }
+    }
+}
